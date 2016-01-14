@@ -15,11 +15,13 @@ function install_nix() {
 	# nix itself
 	wget -c http://nixos.org/releases/nix/nix-1.10/nix-1.10.tar.xz
 	tar -xvf nix-1.10.tar.xz
-	cd nix-1.10
-	./configure
-	make -j 4 # Change 4 to the number of cores your system has.
-	# Wait 3 minutes.
-	make install
+  (
+		cd nix-1.10
+		./configure
+		make -j 4 # Change 4 to the number of cores your system has.
+		# Wait 3 minutes.
+		make install
+  )
 
 	# add users
 	getent group nixbld > /dev/null || groupadd -r nixbld
@@ -34,12 +36,12 @@ function install_nix() {
 function setup_channel() {
 	#nix-channel --add https://nixos.org/channels/nixos-unstable
 	#nix-channel --update
-	git clone https://github.com/NixOS/nixpkgs.git /nixpkgs
+	[ -d nixpkgs ] || git clone https://github.com/NixOS/nixpkgs.git /nixpkgs
 }
 
 export NIXOS_CONFIG=/etc/nixos/configuration.nix
 function install_installers() {
-	mkdir -p /nix/store
+	mkdir -p /etc/nixos
 	cp configuration.nix /etc/nixos
 
 	nix-env -i -K \
