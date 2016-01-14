@@ -22,10 +22,13 @@ function install_nix() {
 	make install
 
 	# add users
-	groupadd -r nixbld
-	for n in $(seq 1 10); do useradd -c "Nix build user $n" \
+	getent group nixbld > /dev/null || groupadd -r nixbld
+	for n in $(seq 1 10); do
+      getent passwd nixbld$n && continue
+      useradd -c "Nix build user $n" \
 	    -d /var/empty -g nixbld -G nixbld -M -N -r -s "$(which nologin)" \
-		    nixbld$n; done
+		    nixbld$n
+   done
 }
 
 function setup_channel() {
