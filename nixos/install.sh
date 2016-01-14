@@ -44,7 +44,7 @@ function install_installers() {
   mkdir -p /etc/nixos
   cp configuration.nix /etc/nixos
 
-  nix-env -i -K \
+  nix-env -i -K --no-build-output \
     -j 4 --cores 4 -f "/nixpkgs/nixos" \
     -A config.system.build.nixos-install \
     -A config.system.build.nixos-option \
@@ -63,7 +63,7 @@ function install_nixos() {
   # This is necessary for some reason.
   # From https://botbot.me/freenode/nixos/2015-05-07/?page=9
   echo 0 > /proc/sys/vm/mmap_min_addr
-  nixos-install --root ${MOUNTPOINT} \
+  nixos-install --root ${MOUNTPOINT} --no-build-output \
     -j 4 --cores 4
   mkdir ${MOUNTPOINT}/root/.nixpkgs
   cp config.nix ${MOUNTPOINT}/root/.nixpkgs/config.nix
