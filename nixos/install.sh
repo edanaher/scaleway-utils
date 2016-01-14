@@ -9,6 +9,7 @@ MOUNTPOINT=/mnt/new
 
 function install_nix() {
 	# nix deps
+	apt-get update
 	apt-get install -y --force-yes libbz2-dev libsqlite3-dev libcurl4-openssl-dev libdbd-sqlite3-perl libwww-curl-perl g++ sqlite3 pkg-config patch git
 
 	# nix itself
