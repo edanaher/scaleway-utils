@@ -5,9 +5,11 @@
 export PS4="\[\033[32;1m++++\[\033[0m "
 set -ex
 
+MOUNTPOINT=/mnt/new
+
 function install_nix() {
 	# nix deps
-	apt-get install libbz2-dev libsqlite3-dev libcurl4-openssl-dev libdbd-sqlite3-perl libwww-curl-perl g++ sqlite3 pkg-config patch git
+	apt-get install -y --force-yes libbz2-dev libsqlite3-dev libcurl4-openssl-dev libdbd-sqlite3-perl libwww-curl-perl g++ sqlite3 pkg-config patch git
 
 	# nix itself
 	wget -c http://nixos.org/releases/nix/nix-1.10/nix-1.10.tar.xz
@@ -47,23 +49,23 @@ function install_nixos() {
 	[ -L $HOME/.nix-profile ] || ln -s /nix/var/nix/profiles/default/ $HOME/.nix-profile
 	export NIX_LINK="$HOME/.nix-profile"
 	export PATH=$NIX_LINK/bin:$NIX_LINK/sbin:$PATH
-	mkdir -p /mnt/new/nixpkgs
-	mount --bind /nixpkgs /mnt/new/nixpkgs
+	mkdir -p ${MOUNTPOINT}/nixpkgs
+	mount --bind /nixpkgs ${MOUNTPOINT}/nixpkgs
 
-	mkdir -p `dirname /mnt/new/$NIXOS_CONFIG`
-	cp configuration.nix /mnt/new/$NIXOS_CONFIG
+	mkdir -p `dirname ${MOUNTPOINT}/$NIXOS_CONFIG`
+	cp configuration.nix ${MOUNTPOINT}/$NIXOS_CONFIG
 	# This is necessary for some reason.
 	# From https://botbot.me/freenode/nixos/2015-05-07/?page=9
 	echo 0 > /proc/sys/vm/mmap_min_addr
-	nixos-install --root /mnt/new \
+	nixos-install --root ${MOUNTPOINT} \
 	  -j 4 --cores 4
-	mkdir /mnt/new/root/.nixpkgs
-	cp config.nix /mnt/new/root/.nixpkgs/config.nix
+	mkdir ${MOUNTPOINT}/root/.nixpkgs
+	cp config.nix ${MOUNTPOINT}/root/.nixpkgs/config.nix
 }
 
 
-#install_nix
-#setup_channel
+install_nix
+setup_channel
 export NIX_PATH="/"
-#install_installers
+install_installers
 install_nixos
