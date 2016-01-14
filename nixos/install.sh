@@ -63,7 +63,7 @@ function install_nixos() {
   # This is necessary for some reason.
   # From https://botbot.me/freenode/nixos/2015-05-07/?page=9
   echo 0 > /proc/sys/vm/mmap_min_addr
-  nixos-install --root ${MOUNTPOINT} --option --no-build-output --no-build-output \
+  nixos-install --root ${MOUNTPOINT} \
     -j 4 --cores 4
   mkdir ${MOUNTPOINT}/root/.nixpkgs
   cp config.nix ${MOUNTPOINT}/root/.nixpkgs/config.nix
