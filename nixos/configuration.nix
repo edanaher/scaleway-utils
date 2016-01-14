@@ -45,6 +45,11 @@
       };
     };
   };
+
+  # Avoid pulling in all of X.
+  environment.noXlibs = true;
+
+  # Build faster!
   nix.buildCores = 4;
   nix.maxJobs = 4;
   #swapDevices = [ { device = "/dev/mmcblk0p2"; } ];
