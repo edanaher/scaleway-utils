@@ -35,7 +35,16 @@ function install_nix() {
    done
 }
 
+function setup_store() {
+  mkdir -p /nix/store
+  mkdir -p ${MOUNTPOINT}/nix/store
+  mount | grep /nix/store || mount -obind ${MOUNTPOINT}/nix/store /nix/store
+}
+
 function setup_channel() {
+  mkdir -p /nix/store
+  mkdir -p /mnt/new/nix/store
+  mount --bind /mnt/new/nix/store /nix/store
   nix-channel --remove nixos
   nix-channel --add https://nixos.org/channels/${CHANNEL}
   nix-channel --update
@@ -74,6 +83,7 @@ function install_nixos() {
 
 
 install_nix
+setup_store
 setup_channel
 install_installers
 install_nixos
