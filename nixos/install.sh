@@ -6,6 +6,7 @@ export PS4="\[\033[32;1m++++\[\033[0m "
 set -ex
 
 MOUNTPOINT=/mnt/new
+CHANNEL=nixos-15.09
 
 function install_nix() {
   getent passwd nixbld10 > /dev/null && which nix-env && return
@@ -35,9 +36,10 @@ function install_nix() {
 }
 
 function setup_channel() {
-  #nix-channel --add https://nixos.org/channels/nixos-unstable
-  #nix-channel --update
-  [ -d /nixpkgs ] || git clone https://github.com/NixOS/nixpkgs.git /nixpkgs
+  nix-channel --remove nixos
+  nix-channel --add https://nixos.org/channels/${CHANNEL}
+  nix-channel --update
+#[ -d /nixpkgs ] || git clone https://github.com/NixOS/nixpkgs.git /nixpkgs
 }
 
 export NIXOS_CONFIG=/etc/nixos/configuration.nix
@@ -46,7 +48,7 @@ function install_installers() {
   cp configuration.nix /etc/nixos
 
   nix-env -i -K --no-build-output \
-    -j 4 --cores 4 -f "/nixpkgs/nixos" \
+    -j 4 --cores 4 -f /root/.nix-defexpr/channels/${CHANNEL}/nixpkgs/nixos \
     -A config.system.build.nixos-install \
     -A config.system.build.nixos-option \
     -A config.system.build.nixos-generate-config 
@@ -73,6 +75,5 @@ function install_nixos() {
 
 install_nix
 setup_channel
-export NIX_PATH="/"
 install_installers
 install_nixos
