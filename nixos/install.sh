@@ -36,9 +36,9 @@ function install_nix() {
 }
 
 function setup_store() {
-  mkdir -p /nix/store
-  mkdir -p ${MOUNTPOINT}/nix/store
-  mount | grep /nix/store || mount -obind ${MOUNTPOINT}/nix/store /nix/store
+  mkdir -p /nix
+  mkdir -p ${MOUNTPOINT}/nix
+  mount | grep /nix || mount -obind ${MOUNTPOINT}/nix /nix
 }
 
 function setup_channel() {
