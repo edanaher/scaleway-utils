@@ -67,14 +67,13 @@ function install_nixos() {
   [ -L $HOME/.nix-profile ] || ln -s /nix/var/nix/profiles/default/ $HOME/.nix-profile
   export NIX_LINK="$HOME/.nix-profile"
   export PATH=$NIX_LINK/bin:$NIX_LINK/sbin:$PATH
-  mkdir -p ${MOUNTPOINT}/nixpkgs
-  mount --bind /nixpkgs ${MOUNTPOINT}/nixpkgs
 
   mkdir -p `dirname ${MOUNTPOINT}/$NIXOS_CONFIG`
   cp configuration.nix ${MOUNTPOINT}/$NIXOS_CONFIG
   # This is necessary for some reason.
   # From https://botbot.me/freenode/nixos/2015-05-07/?page=9
-  echo 0 > /proc/sys/vm/mmap_min_addr
+  # echo 0 > /proc/sys/vm/mmap_min_addr
+  export NIX_PATH=/root/.nix-defexpr/channels/nixos-15.09
   nixos-install --root ${MOUNTPOINT} \
     -j 4 --cores 4
   mkdir ${MOUNTPOINT}/root/.nixpkgs
