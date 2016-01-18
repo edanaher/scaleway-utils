@@ -1,4 +1,8 @@
 { pkgs, config, ... }:
+
+let
+  scaleway-scripts = (import ./scaleway-scripts (with pkgs; { inherit stdenv bash curl; } ));
+in
 {
   boot = {
     initrd.kernelModules = [];
@@ -47,10 +51,14 @@
   };
 
   environment.systemPackages = [
-    (import ./scaleway-scripts (with pkgs; { inherit stdenv bash curl; } ))
+    scaleway-scripts
     pkgs.screen
     pkgs.vim
   ];
+
+  # TODO(edanaher): There's probably a better way to pass in scaleway-scripts.
+  # But currying works!
+  imports = [ (import ./scaleway-scripts/services.nix scaleway-scripts) ];
 
   # Avoid pulling in all of X.
   environment.noXlibs = true;
