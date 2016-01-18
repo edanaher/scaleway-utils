@@ -47,8 +47,9 @@
   };
 
   environment.systemPackages = [
-    (import ./scaleway-scripts/oc-metadata.nix (with pkgs; { inherit stdenv bash curl; } ))
+    (import ./scaleway-scripts (with pkgs; { inherit stdenv bash curl; } ))
     pkgs.screen
+    pkgs.vim
   ];
 
   # Avoid pulling in all of X.
