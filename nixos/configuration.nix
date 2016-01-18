@@ -46,6 +46,11 @@
     };
   };
 
+  environment.systemPackages = [
+    (import ./scaleway-scripts/oc-metadata.nix (with pkgs; { inherit stdenv bash curl; } ))
+    pkgs.screen
+  ];
+
   # Avoid pulling in all of X.
   environment.noXlibs = true;
 
