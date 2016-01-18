@@ -80,9 +80,14 @@ function install_nixos() {
   cp config.nix ${MOUNTPOINT}/root/.nixpkgs/config.nix
 }
 
+function fixup() {
+  mkdir /mnt/new/sbin
+  ln -s /boot/default/init /mnt/new/sbin/init
+}
 
 install_nix
 setup_store
 setup_channel
 install_installers
 install_nixos
+fixup
